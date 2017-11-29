@@ -53,17 +53,16 @@ def test3(request):
 	return render(request, 'Competentions/test3.html', {'allCompetentions' : allCompetentions})
 
 def test4(request):
-  t = models.Standart.objects.filter(title='Программист')[0]
-  return render(request, 'Competentions/test4.html', {'standart' : t})
-
-def getStandartAjax(request):
-	'''
-	print('imp')
-	data = request.POST.get('standartTitle', None)
-	print(data)
-	return HttpResponse("azaza")
 	'''
 	t = models.Standart.objects.filter(title='Программист')[0]
+	return render(request, 'Competentions/test4.html', {'standart' : t})
+	'''
+	t = models.Standart.objects.all()
+	return render(request, 'Competentions/test4.html', {'standarts' : t})
+
+def getStandartAjax(request):
+	standartTitle = request.POST.get('standartTitle', None)
+	t = models.Standart.objects.filter(title=standartTitle)[0]
 	return render(request, 'Competentions/leftColumn.html', {'standart' : t})
 
 

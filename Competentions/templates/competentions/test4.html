@@ -8,6 +8,11 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'style/style.css' %}">
 </head>
 <body>
+	<select id="standartSelector">
+		{% for standart in standarts %}
+			<option>{{ standart.title }}</option>
+		{% endfor %}
+	</select>
 	<div class="LeftColumn">
 		<p>Left column</p>
 		
@@ -16,7 +21,25 @@
 		<p>Right column</p>
 	</div>
 	<script type="text/javascript">
+
+		function getStandart(standartTitle){
+	    $.ajax({
+	      type: "POST",
+	      url: "../getStandart/",
+	      data:  {
+	        standartTitle: standartTitle,
+	        csrfmiddlewaretoken: "{{ csrf_token }}",
+	      },
+	      success: function(msg){
+	        $(".LeftColumn").html(msg);
+	      }
+	    })
+	  };
+
 		$(document).ready(function(){
+			var $standartTitle = $('#standartSelector :selected').text();
+			getStandart($standartTitle)
+
 		  $('body').on('click', '.changeCompetention', function(){
 		    $.ajax({
 		      type: "POST",
@@ -29,7 +52,7 @@
 		        $(".LeftColumn").html(msg);
 		      }
 		    })
-		  })
+		  });
 
 		  $('body').on('click', '.toggle', function(){
 				var $this = $(this);
@@ -43,10 +66,14 @@
 					$this.next().toggleClass('show');
 					$this.next().slideToggle(350);
 				}
-			})
+			});
+
+			$('body').on('change', '#standartSelector, #reducedViewCheck', function(){
+				var $standartTitle = $('#standartSelector :selected').text();
+				getStandart($standartTitle)
+			});
 		  
 		})
 	</script>
 </body>
-<button class='changeCompetention'>try ajax</button>
 </html>
