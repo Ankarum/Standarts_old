@@ -1,0 +1,90 @@
+<ul>
+  <li><p>{{standart.title}}</p></li>
+  <li>
+    <p class="toggle">Обобщеные трудовые функции</p>
+    <ul class="inner">
+    {% for commonWorkFunction in standart.commonworkfunction_set.all %}
+      <li>
+        <p class="toggle">{{commonWorkFunction}}</p>
+        <ul class="inner">
+          <li>
+            <p class="toggle">Уровень квалификации</p>
+            <ul class="inner">
+              <li><p>{{commonWorkFunction.qualificationLevel}}</p></li>
+            </ul>
+          </li>
+          <li>
+            <p class="toggle">Возможные наименования должностей</p>
+            <ul class="inner">
+            {% for positionTitle in  commonWorkFunction.positionTitles.all%}
+              <li><p>{{positionTitle}}</p></li>
+            {% endfor %}
+            </ul>
+          </li>
+          <li>
+            <p class="toggle">Требования к образованию и обучению</p>
+            <ul class="inner">
+            {% for educationRequirement in commonWorkFunction.educationRequirements.all %}
+              <li><p>{{educationRequirement}}</p></li>
+            {% endfor %}
+            </ul>
+          </li>
+          <li>
+            <p class="toggle">Требования к опыту практической работы</p>
+            <ul class="inner">
+            {% for workRequirement in commonWorkFunction.workRequirements.all %}
+              <li><p>{{workRequirement}}</p></li>
+            {% endfor %}
+            </ul>
+          </li>
+          <li>
+            <p class="toggle">Особые условия допуска к работе</p>
+            <ul class="inner">
+            {% for accessRequirement in commonWorkFunction.accessRequirements.all %}
+              <li><p>{{accessRequirement}}</p></li>
+            {% endfor %}
+            </ul>
+          </li>
+          <li>
+            <p class="toggle">Трудовые функции</p>
+            <ul class="inner">
+            {% for workFunction in commonWorkFunction.workfunction_set.all %}
+              <li>
+                <p>{{workFunction.title}}</p>
+                <ul>
+                  <li>
+                    <p class="toggle">Трудовые действия</p>
+                    <ul class="inner">
+                    {% for workAction in workFunction.workActions.all %}
+                      <li><p>{{workAction}}</p></li>
+                    {% endfor %}
+                    </ul>
+                  </li>
+                  <li>
+                    <p class="toggle">Необходимые умения</p>
+                    <ul class="inner">
+                    {% for neccessarySkill in workFunction.neccessarySkills.all %}
+                      <li><p>{{neccessarySkill}}</p></li>
+                    {% endfor %}
+                    </ul>
+                  </li>
+                  <li>
+                    <p class="toggle">Необходимые знания</p>
+                    <ul class="inner">
+                    {% for neccessaryKnowledge in workFunction.neccessaryKnowledges.all %}
+                      <li><p>{{neccessaryKnowledge}}</p></li>
+                    {% endfor %}
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            {% endfor %}
+            </ul>
+          </li>
+        </ul>
+      </li>
+    {% endfor %}
+    </ul>
+  </li>
+  
+</ul>

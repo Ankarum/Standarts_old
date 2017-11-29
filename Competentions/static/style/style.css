@@ -1,0 +1,72 @@
+/* Columns style */
+.LeftColumn, .RightColumn {
+	border: 1% solid black;
+	margin: 1%;
+}
+
+.LeftColumn {
+	float: left;
+	width: 45%;
+}
+
+.RightColumn {
+	float : right;
+	width: 45%;
+}
+
+/* List style */
+ul {
+	list-style: none;
+}
+
+li a , li p{
+	width: 100%;
+	background: rgba(0, 0, 0, 0.78);
+	color: #fefefe;
+	border-radius: 0.15em;
+	margin: .5em 0;
+	padding: .75em;
+	display: block;
+}
+
+.CanBeAdded, .AlreadyAdded {
+	background: rgba(0, 0, 0, 0.5);
+}
+
+/* toggling */
+ul .inner {
+	padding-left: 1em;
+	overflow: hidden;
+	display: none;
+}
+ul .inner.show {
+	/*display: block;*/
+}
+
+ul li a.toggle:hover {
+	background: rgba(0, 0, 0, 0.9);
+}
+
+.CanBeAdded:hover, .AlreadyAdded:hover {
+	background: rgba(0, 0, 0, 0.9);
+}
+
+/* Select */
+
+select, .check, .button, .inputText{
+	width: 100%;
+	background: rgba(0, 0, 0, 0.78);
+	color: #fefefe;
+	border-radius: 0.15em;
+	margin: .5em 0;
+	padding: .75em;
+	display: block;
+}
+
+.check, .button, .inputText, #competentionSelector {
+	width: 18%;
+}
+
+.horizontal{
+	display: inline-block;
+}

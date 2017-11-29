@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<ul>
+	{% for key, value in allCompetentions.items %}
+		<li>
+			{{key}}
+			<ul>
+			{% for competention in value %}
+				<li>{{competention}}</li>
+			{% endfor %}
+			</ul>
+		</li>
+	{% endfor %}
+	</ul>
+</body>
+</html>
