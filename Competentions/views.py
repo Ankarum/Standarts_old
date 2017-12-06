@@ -60,6 +60,9 @@ def test4(request):
 	t = models.Standart.objects.all()
 	return render(request, 'Competentions/test4.html', {'standarts' : t})
 
+def test5(request):
+	return render(request, 'Competentions/test5.html')
+
 def getStandartAjax(request):
 	standartTitle = request.POST.get('standartTitle', None)
 	t = models.Standart.objects.filter(title=standartTitle)[0]
