@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import Standart, CommonWorkFunction, PositionTitle, EducationRequirement
 from .models import WorkRequirement, AccessRequirement, WorkFunction
-from .models import WorkAction, NeccessarySkill, NeccessaryKnowledge
+from .models import WorkAction, NeccessarySkill, NeccessaryKnowledge, CustomCompetention
 
 from .forms import StandartImportForm
 
@@ -16,6 +16,7 @@ admin.site.register(WorkFunction)
 admin.site.register(WorkAction)
 admin.site.register(NeccessarySkill)
 admin.site.register(NeccessaryKnowledge)
+admin.site.register(CustomCompetention)
 
 class StandartImportAdmin(admin.ModelAdmin):
 	form = StandartImportForm

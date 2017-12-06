@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Standart(models.Model):
@@ -64,6 +65,16 @@ class NeccessaryKnowledge(models.Model):
 class WorkFunction(models.Model):
 	title = models.CharField(max_length=100)
 	commonWorkFunction = models.ForeignKey(CommonWorkFunction, null=True)
+	workActions = models.ManyToManyField(WorkAction)
+	neccessarySkills = models.ManyToManyField(NeccessarySkill)
+	neccessaryKnowledges = models.ManyToManyField(NeccessaryKnowledge)
+
+	def __str__(self):
+		return self.title
+
+class CustomCompetention(models.Model):
+	title = models.CharField(max_length=100)
+	user = models.ForeignKey(User)
 	workActions = models.ManyToManyField(WorkAction)
 	neccessarySkills = models.ManyToManyField(NeccessarySkill)
 	neccessaryKnowledges = models.ManyToManyField(NeccessaryKnowledge)

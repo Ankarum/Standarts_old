@@ -1,25 +1,62 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title></title>
-	{% load static %}
-	<script type="text/javascript" src="{% static 'javascript/jquery-3.2.1.js' %}"></script>
-	<script type="text/javascript" src="{% static 'javascript/getStandart.js' %}"></script>
-	<link rel="stylesheet" type="text/css" href="{% static 'style/style.css' %}">
-</head>
-<body>
-	<select id="standartSelector">
-		{% for standart in standarts %}
-			<option>{{ standart.title }}</option>
-		{% endfor %}
-	</select>
-	<div class="LeftColumn">
-		<p>Left column</p>
-		
+{% extends 'base.html' %}
+{% block javascript_includes %}
+
+{% endblock javascript_includes %}
+{% block content %}
+	
+	
+	<div class="row">
+
+		<div class="col-sm-6" >
+
+			<label for="standartSelector">Выберите стандарт</label>
+			<div class="panel panel-default">
+			  <div class="panel-heading">
+			    <h4 class="panel-title">
+			      <div class="form-group">
+							<select id="standartSelector" class="form-control">
+								{% for standart in standarts %}
+									<option>{{ standart.title }}</option>
+								{% endfor %}
+							</select>
+						</div>
+			    </h4>
+			  </div>
+			  <div class="panel-default">
+			    <div class="panel-body">
+			      <div id="StandartCompetentionColumn"></div>
+			    </div>
+			  </div>
+			</div>
+
+		</div>
+
+		<div class="col-sm-6">
+
+			<label for="customCompetentionSelector">Выберите пользовательскую компетенцию</label>
+			<div class="panel panel-default">
+			  <div class="panel-heading">
+			    <h4 class="panel-title">
+			      <div class="form-group">
+							<select id="customCompetentionSelector" class="form-control">
+								{% for customCompetention in request.user.customcompetention_set.all %}
+									<option>{{ customCompetention.title }}</option>
+								{% endfor %}
+							</select>
+						</div>
+			    </h4>
+			  </div>
+			  <div class="panel-default">
+			    <div class="panel-body">
+			      <div id="CustomCompetentionColumn"></div>
+			    </div>
+			  </div>
+			</div>
+
+		</div>
+
 	</div>
-	<div class="RightColumn">
-		<p>Right column</p>
-	</div>
+
 	<script type="text/javascript">
 
 		function getStandart(standartTitle){
@@ -31,7 +68,21 @@
 	        csrfmiddlewaretoken: "{{ csrf_token }}",
 	      },
 	      success: function(msg){
-	        $(".LeftColumn").html(msg);
+	        $("#StandartCompetentionColumn").html(msg);
+	      }
+	    })
+	  };
+
+	  function getCustomCompetention(customCompetentionTitle){
+	    $.ajax({
+	      type: "POST",
+	      url: "../getCustomCompetention/",
+	      data:  {
+	        customCompetentionTitle: customCompetentionTitle,
+	        csrfmiddlewaretoken: "{{ csrf_token }}",
+	      },
+	      success: function(msg){
+	        $("#CustomCompetentionColumn").html(msg);
 	      }
 	    })
 	  };
@@ -39,6 +90,13 @@
 		$(document).ready(function(){
 			var $standartTitle = $('#standartSelector :selected').text();
 			getStandart($standartTitle)
+
+			var $customCompetentionTitle = $('#customCompetentionSelector :selected').text();
+			getCustomCompetention($customCompetentionTitle);
+
+			$('body').on('click', '.collapser', function(){
+        $(this).next().collapse('toggle');
+      });
 
 		  $('body').on('click', '.changeCompetention', function(){
 		    $.ajax({
@@ -54,26 +112,17 @@
 		    })
 		  });
 
-		  $('body').on('click', '.toggle', function(){
-				var $this = $(this);
-
-				if ($this.next().hasClass('show')) {
-					$this.next().removeClass('show');
-					$this.next().slideUp(350);
-				} else {
-					$this.parent().parent().find('li .inner').removeClass('show');
-					$this.parent().parent().find('li .inner').slideUp(350);
-					$this.next().toggleClass('show');
-					$this.next().slideToggle(350);
-				}
+			$('body').on('change', '#standartSelector', function(){
+				var $standartTitle = $('#standartSelector :selected').text();
+				getStandart($standartTitle);
 			});
 
-			$('body').on('change', '#standartSelector, #reducedViewCheck', function(){
-				var $standartTitle = $('#standartSelector :selected').text();
-				getStandart($standartTitle)
+			$('body').on('change', '#customCompetentionSelector', function(){
+				var $customCompetentionTitle = $('#customCompetentionSelector :selected').text();
+				getCustomCompetention($customCompetentionTitle);
 			});
 		  
 		})
 	</script>
-</body>
-</html>
+{% endblock content %}
+

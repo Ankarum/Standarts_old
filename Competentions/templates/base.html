@@ -11,6 +11,8 @@
   {# Load CSS and JavaScript #}
   {% bootstrap_css %}
   {% bootstrap_javascript jquery=1 %}
+  {% block javascript_includes %}{% endblock javascript_includes %}
+  {% block css_includes %}{% endblock css_includes %}
 
   {# Display django.contrib.messages as Bootstrap alerts #}
   {% bootstrap_messages %}

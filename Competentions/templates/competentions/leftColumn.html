@@ -1,90 +1,198 @@
-<ul>
-  <li><p>{{standart.title}}</p></li>
-  <li>
-    <p class="toggle">Обобщеные трудовые функции</p>
-    <ul class="inner">
-    {% for commonWorkFunction in standart.commonworkfunction_set.all %}
-      <li>
-        <p class="toggle">{{commonWorkFunction}}</p>
-        <ul class="inner">
-          <li>
-            <p class="toggle">Уровень квалификации</p>
-            <ul class="inner">
-              <li><p>{{commonWorkFunction.qualificationLevel}}</p></li>
-            </ul>
-          </li>
-          <li>
-            <p class="toggle">Возможные наименования должностей</p>
-            <ul class="inner">
-            {% for positionTitle in  commonWorkFunction.positionTitles.all%}
-              <li><p>{{positionTitle}}</p></li>
-            {% endfor %}
-            </ul>
-          </li>
-          <li>
-            <p class="toggle">Требования к образованию и обучению</p>
-            <ul class="inner">
-            {% for educationRequirement in commonWorkFunction.educationRequirements.all %}
-              <li><p>{{educationRequirement}}</p></li>
-            {% endfor %}
-            </ul>
-          </li>
-          <li>
-            <p class="toggle">Требования к опыту практической работы</p>
-            <ul class="inner">
-            {% for workRequirement in commonWorkFunction.workRequirements.all %}
-              <li><p>{{workRequirement}}</p></li>
-            {% endfor %}
-            </ul>
-          </li>
-          <li>
-            <p class="toggle">Особые условия допуска к работе</p>
-            <ul class="inner">
-            {% for accessRequirement in commonWorkFunction.accessRequirements.all %}
-              <li><p>{{accessRequirement}}</p></li>
-            {% endfor %}
-            </ul>
-          </li>
-          <li>
-            <p class="toggle">Трудовые функции</p>
-            <ul class="inner">
-            {% for workFunction in commonWorkFunction.workfunction_set.all %}
-              <li>
-                <p>{{workFunction.title}}</p>
-                <ul>
-                  <li>
-                    <p class="toggle">Трудовые действия</p>
-                    <ul class="inner">
-                    {% for workAction in workFunction.workActions.all %}
-                      <li><p>{{workAction}}</p></li>
-                    {% endfor %}
-                    </ul>
-                  </li>
-                  <li>
-                    <p class="toggle">Необходимые умения</p>
-                    <ul class="inner">
-                    {% for neccessarySkill in workFunction.neccessarySkills.all %}
-                      <li><p>{{neccessarySkill}}</p></li>
-                    {% endfor %}
-                    </ul>
-                  </li>
-                  <li>
-                    <p class="toggle">Необходимые знания</p>
-                    <ul class="inner">
-                    {% for neccessaryKnowledge in workFunction.neccessaryKnowledges.all %}
-                      <li><p>{{neccessaryKnowledge}}</p></li>
-                    {% endfor %}
-                    </ul>
-                  </li>
-                </ul>
-              </li>
-            {% endfor %}
-            </ul>
-          </li>
-        </ul>
-      </li>
-    {% endfor %}
-    </ul>
-  </li>
-  
-</ul>
+<div class="panel panel-default">
+  <div class="panel-heading collapser">
+    <h4 class="panel-title">
+      <a data-toggle="collapse">Обобщенные трудовые функции</a>
+    </h4>
+  </div>
+  <div class="panel-collapse collapse in">
+    <div class="panel-body">
+      <div class="panel-group">
+        {% for commonWorkFunction in standart.commonworkfunction_set.all %}
+        
+        <div class="panel panel-default">
+          <div class="panel-heading collapser">
+            <h4 class="panel-title">
+              <a data-toggle="collapse">{{commonWorkFunction}}</a>
+            </h4>
+          </div>
+          <div class="panel-collapse collapse">
+            <div class="panel-body">
+              <div class="panel-group">
+
+                <div class="panel panel-default">
+                  <div class="panel-heading collapser">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse">Уровень квалификации</a>
+                    </h4>
+                  </div>
+                  <div class="panel-collapse collapse">
+                    <div class="panel-body">
+                      {{commonWorkFunction.qualificationLevel}}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="panel panel-default">
+                  <div class="panel-heading collapser">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse">Возможные наименования должностей</a>
+                    </h4>
+                  </div>
+                  <div class="panel-collapse collapse">
+                    <div class="panel-body">
+                      <div class="panel-body">
+                        <ul class="list-group">
+                          {% for positionTitle in  commonWorkFunction.positionTitles.all%}
+                            <li class="list-group-item">{{positionTitle}}</li>
+                          {% endfor %}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="panel panel-default">
+                  <div class="panel-heading collapser">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse">Требования к образованию и обучению</a>
+                    </h4>
+                  </div>
+                  <div class="panel-collapse collapse">
+                    <div class="panel-body">
+                      <ul class="list-group">
+                        {% for educationRequirement in commonWorkFunction.educationRequirements.all %}
+                          <ul class="list-group-item">{{educationRequirement}}</ul>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="panel panel-default">
+                  <div class="panel-heading collapser">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse">Требования к опыту практической работы</a>
+                    </h4>
+                  </div>
+                  <div class="panel-collapse collapse">
+                    <div class="panel-body">
+                      <ul class="list-group">
+                        {% for workRequirement in commonWorkFunction.workRequirements.all %}
+                          <li class="list-group-item">{{workRequirement}}</li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="panel panel-default">
+                  <div class="panel-heading collapser">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse">Особые условия допуска к работе</a>
+                    </h4>
+                  </div>
+                  <div class="panel-collapse collapse">
+                    <div class="panel-body">
+                      <ul class="list-group">
+                        {% for accessRequirement in commonWorkFunction.accessRequirements.all %}
+                        <li class="list-group-item">{{accessRequirement}}</li>
+                      {% endfor %}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="panel panel-default">
+                  <div class="panel-heading collapser">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse">Трудовые функции</a>
+                    </h4>
+                  </div>
+                  <div class="panel-collapse collapse">
+                    <div class="panel-body">
+                      <div class="panel-group">
+
+                        {% for workFunction in commonWorkFunction.workfunction_set.all %}
+                          <div class="panel panel-default">
+                            <div class="panel-heading collapser">
+                              <h4 class="panel-title">
+                                <a data-toggle="collapse">{{workFunction.title}}</a>
+                              </h4>
+                            </div>
+                            <div class="panel-collapse collapse">
+                              <div class="panel-body">
+                                <div class="panel-group">
+                                  
+                                  <div class="panel panel-default">
+                                    <div class="panel-heading collapser">
+                                      <h4 class="panel-title">
+                                        <a data-toggle="collapse">Трудовые действия</a>
+                                      </h4>
+                                    </div>
+                                    <div class="panel-collapse collapse">
+                                      <div class="panel-body">
+                                        <ul class="list-group">
+                                          {% for workAction in workFunction.workActions.all %}
+                                            <li class="list-group-item">{{workAction}}</li>
+                                          {% endfor %}
+                                        </ul>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div class="panel panel-default">
+                                    <div class="panel-heading collapser">
+                                      <h4 class="panel-title">
+                                        <a data-toggle="collapse">Необходимые умения</a>
+                                      </h4>
+                                    </div>
+                                    <div class="panel-collapse collapse">
+                                      <div class="panel-body">
+                                        <ul class="list-group">
+                                          {% for neccessarySkill in workFunction.neccessarySkills.all %}
+                                            <li class="list-group-item">{{neccessarySkill}}</li>
+                                          {% endfor %}
+                                        </ul>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div class="panel panel-default">
+                                    <div class="panel-heading collapser">
+                                      <h4 class="panel-title">
+                                        <a data-toggle="collapse">Необходимые знания</a>
+                                      </h4>
+                                    </div>
+                                    <div class="panel-collapse collapse">
+                                      <div class="panel-body">
+                                        <ul class="list-group">
+                                          {% for neccessaryKnowledge in workFunction.neccessaryKnowledges.all %}
+                                            <li class="list-group-item">{{neccessaryKnowledge}}</li>
+                                          {% endfor %}
+                                        </ul>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        {% endfor %}
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+</div>
