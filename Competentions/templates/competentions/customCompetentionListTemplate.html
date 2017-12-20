@@ -1,0 +1,42 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h4 class="panel-title">
+      <a>Трудовые действия</a>
+    </h4>
+  </div>
+  <div class="panel-default">
+    <div class="panel-body" id="CustomWorkActions">
+      {% for workAction in customCompetentionList.workActions.all %}
+        <li class="list-group-item CustomCompetentionListWorkAction">{{workAction}}</li>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h4 class="panel-title">
+      <a>Необходимые умения</a>
+    </h4>
+  </div>
+  <div class="panel-default">
+    <div class="panel-body" id="CustomNeccessarySkills">
+      {% for neccessarySkill in customCompetentionList.neccessarySkills.all %}
+        <li class="list-group-item CustomCompetentionListNeccessarySkill">{{neccessarySkill}}</li>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h4 class="panel-title">
+      <a>Необходимые знания</a>
+    </h4>
+  </div>
+  <div class="panel-default">
+    <div class="panel-body" id="CustomNeccessaryKnowledges">
+      {% for neccessaryKnowledge in customCompetentionList.neccessaryKnowledges.all %}
+        <li class="list-group-item CustomCompetentionListNeccessaryKnowledge">{{neccessaryKnowledge}}</li>
+      {% endfor %}
+    </div>
+  </div>
+</div>

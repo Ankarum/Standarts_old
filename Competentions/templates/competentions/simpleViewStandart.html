@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+
+	<div class="panel-body">
+    <div class="panel-group">
+
+    	{% for key, value in allCompetentions.items %}
+
+    		<div class="panel panel-default">
+	        <div class="panel-heading collapser">
+	          <h4 class="panel-title">
+	            <a data-toggle="collapse">{{key}}</a>
+	          </h4>
+	        </div>
+	        <div class="panel-collapse collapse">
+	          <div class="panel-body">
+	            <div class="btn-group-vertical">
+	              {% for competention in value %}
+	              	{% if key == "Трудовые действия"%}
+	              		<button class="StandartWorkAction btn btn-primary" style="white-space: normal;">{{competention}}</button>
+	              	{% elif key == "Необходимые умения" %}
+	              		<button class="StandartNeccessarySkill btn btn-primary" style="white-space: normal;">{{competention}}</button>
+	              	{% elif key == "Необходимые знания" %}
+	              		<button class="StandartNeccessaryKnowledge btn btn-primary" style="white-space: normal;">{{competention}}</button>
+	              	{% endif %}
+	              {% endfor %}
+	            </div>
+	          </div>
+	        </div>
+	      </div>
+			{% endfor %}
+
+    </div>
+  </div>
+
+	<ul>
+	
+	</ul>
+</body>
+</html>

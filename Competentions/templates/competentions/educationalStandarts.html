@@ -1,0 +1,310 @@
+{% extends 'base.html' %}
+{% block javascript_includes %}
+
+{% endblock javascript_includes %}
+{% block content %}
+	
+	
+	<div class="row container">
+
+		<div class="col-sm-6" >
+
+			<label for="educationalStandartSelector">Образовательный стандарт</label>
+			<div class="panel panel-default">
+			  <div class="panel-heading">
+			    <h4 class="panel-title">
+			      <div class="form-group">
+							<select id="educationalStandartSelector" class="form-control">
+								{% for educationalStandart in educationalStandarts %}
+									<option>{{ educationalStandart.title }}</option>
+								{% endfor %}
+							</select>
+						</div>
+			    </h4>
+			  </div>
+			  <div class="panel-default">
+			    <div class="panel-body">
+			      <div id="educationalStandartColumn"></div>
+			    </div>
+			  </div>
+			</div>
+
+		</div>
+
+		<div class="col-sm-6">
+
+			<label for="customCompetentionListSelector">Пользовательский набор компетенций</label>
+			<div class="panel panel-default">
+			  <div class="panel-heading">
+			    <h4 class="panel-title">
+			      <div class="form-group">
+							<select id="customCompetentionListSelector" class="form-control">
+								{% for customCompetentionList in request.user.customcompetentionlist_set.all %}
+									<option>{{ customCompetentionList.title }}</option>
+								{% endfor %}
+							</select>
+						</div>
+			    </h4>
+			    <div class="btn-group-horizontal">
+
+			    	<div class="btn-group">
+					    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Добавить</button>
+					    <div class="dropdown-menu container-fluid" role="menu">
+				    			<input type="text" class="form-control" id="newCustomCompetentionListTitle" placeholder="Название набора">
+				    			<button class="btn" id="addCustomCompetentionListButton">Добавить</button>
+					    </div>
+					  </div>
+
+					  <div class="btn-group">
+					    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Переименовать</button>
+					    <div class="dropdown-menu container-fluid" role="menu">
+					    	<form>
+					    			<input type="text" class="form-control" id="newCustomCompetentionListTitle" placeholder="Название набора">
+					    			<button type="submit" class="btn">Добавить</button>
+					    	</form>
+					    </div>
+					  </div>
+
+					  <button type="button" class="btn btn-default dropdown-toggle" id="deleteCustomCompetentionListButton">Удалить</button>
+
+			    </div>
+			  </div>
+			  <div class="panel-default">
+			    <div class="panel-body">
+			      <div id="CustomCompetentionListColumn"></div>
+			    </div>
+			  </div>
+			</div>
+
+		</div>
+
+	</div>
+
+	<script type="text/javascript">
+
+	
+		function getEducationalStandart(educationalStandartTitle){
+	    $.ajax({
+	      type: "POST",
+	      url: "../getEducationalStandart/",
+	      data:  {
+	        educationalStandartTitle: educationalStandartTitle,
+	        csrfmiddlewaretoken: "{{ csrf_token }}",
+	      },
+	      success: function(msg){
+	        $("#educationalStandartColumn").html(msg);
+	        compareCustomAndStandart();
+	      }
+	    })
+	  };
+
+	  function getSimpleViewStandart(standartTitle){
+	    $.ajax({
+	      type: "POST",
+	      url: "../getSimpleViewStandart/",
+	      data:  {
+	        standartTitle: standartTitle,
+	        csrfmiddlewaretoken: "{{ csrf_token }}",
+	      },
+	      success: function(msg){
+	        $("#StandartCompetentionColumn").html(msg);
+	        compareCustomAndStandart();
+	      }
+	    })
+	  };
+
+	  function addNewCustomCompetentionList(newListTitle){
+	    $.ajax({
+	      type: "POST",
+	      url: "../addCustomCompetentionListAjax/",
+	      data:  {
+	        newListTitle: newListTitle,
+	        csrfmiddlewaretoken: "{{ csrf_token }}",
+	      },
+	      success: function(msg){
+	        $("#StandartCompetentionColumn").html(msg);
+	        compareCustomAndStandart();
+	      }
+	    })
+	  };
+
+	  function getCustomCompetentionList(customCompetentionListTitle){
+	    $.ajax({
+	      type: "POST",
+	      url: "../getCustomCompetentionList/",
+	      data:  {
+	        customCompetentionListTitle: customCompetentionListTitle,
+	        csrfmiddlewaretoken: "{{ csrf_token }}",
+	      },
+	      success: function(msg){
+	        $("#CustomCompetentionListColumn").html(msg);
+	        compareCustomAndStandart();
+	      }
+	    })
+	  };
+
+	  function compareCustomAndStandart()
+	  	{
+	  		var dict = {
+	  			".CustomCompetentionListWorkAction" : ".StandartWorkAction",
+	  			".CustomCompetentionListNeccessarySkill" : ".StandartNeccessarySkill",
+	  			".CustomCompetentionListNeccessaryKnowledge" : ".StandartNeccessaryKnowledge",
+	  		};
+	  		$.each(dict, function(key, value){
+	  			var customWorkActionList = $(key).map(function(){
+	           return $(this).text();
+	        }).get();
+
+	        $(value).each(function(i, elem){
+	        	if ($.inArray($(this).text(), customWorkActionList) !== -1){
+	        		$(this).removeClass("btn-default");
+	        		$(this).addClass("btn-primary");
+	        	} else {
+	        		$(this).removeClass("btn-primary");
+	        		$(this).addClass("btn-default");
+	        	}
+	        })
+	  		})
+	  	}
+
+		$(document).ready(function(){
+			var $educationalStandartTitle = $('#educationalStandartSelector :selected').text();
+			getEducationalStandart($educationalStandartTitle)
+
+			var $customCompetentionListTitle = $('#customCompetentionListSelector :selected').text();
+			getCustomCompetentionList($customCompetentionListTitle);
+
+			$('body').on('click', '.collapser', function(){
+        $(this).next().collapse('toggle');
+      });
+
+		  $('body').on('click', '.changeCompetention', function(){
+		    $.ajax({
+		      type: "POST",
+		      url: "../getStandart/",
+		      data:  {
+		        standartTitle: "Программист",
+		        csrfmiddlewaretoken: "{{ csrf_token }}",
+		      },
+		      success: function(msg){
+		        $(".LeftColumn").html(msg);
+		      }
+		    })
+		  });
+/*
+		  $('body').on('click', '#addCustomCompetentionListButton', function(){
+		  	var $customCompetentionListTitle = $("#newCompetentionTitle").val();
+		    $.ajax({
+		      type: "POST",
+		      url: "../addCustomCompetention/",
+		      data:  {
+		        csrfmiddlewaretoken: "{{ csrf_token }}",
+		        customCompetentionListTitle: $customCompetentionListTitle,
+		      },
+		      success: function(msg){
+		      	if (msg=="added") {
+		      		var $addedComp = "<option>" + $customCompetentionListTitle + "</option>"
+		      		$("#customCompetentionListSelector").append($addedComp)
+		      	}
+		      }
+		    })
+		  });*/
+
+
+		  $('body').on('click', '.btn-default', function(){
+		  	var dict = {
+	  			"StandartWorkAction" : ["#CustomWorkActions", "WorkAction", "CustomCompetentionListWorkAction"],
+	  			"StandartNeccessarySkill" : ["#CustomNeccessarySkills", "NeccessarySkill", "CustomCompetentionListNeccessarySkill"],
+	  			"StandartNeccessaryKnowledge" : ["#CustomNeccessaryKnowledges", "NeccessaryKnowledge", "CustomCompetentionListNeccessaryKnowledge"],
+	  		};
+	  		var $button = $(this);
+		    $.each(dict, function(key){
+		    	if ($button.hasClass(key)) {
+		    		var $line = "<li class='list-group-item " + dict[key][2] + "'>" + $button.text() + "</li>";
+		    		$(dict[key][0]).append($line)
+
+		    		var $customCompetentionListTitle = $('#customCompetentionListSelector :selected').text();
+
+		    		$.ajax({
+				      type: "POST",
+				      url: "../addCompetentionToCustomCompetentionList/",
+				      data:  {
+				      	customCompetentionListTitle: $customCompetentionListTitle,
+				      	competentionType: dict[key][1],
+				      	competentionTitle: $button.text(),
+				        csrfmiddlewaretoken: "{{ csrf_token }}",
+				      },
+				      success: function(msg){
+				        compareCustomAndStandart();
+				      }
+				    })
+		    	}
+		    })
+		  });
+
+		  $('body').on('click', '#addCustomCompetentionListButton', function(){
+		  	var $listTitle = $('#newCustomCompetentionListTitle').val();
+
+		  	$.ajax({
+		      type: "POST",
+		      url: "../addCustomCompetentionListAjax/",
+		      data:  {
+		        newListTitle: $listTitle,
+		        csrfmiddlewaretoken: "{{ csrf_token }}",
+		      },
+		      success: function(msg){
+		        if (msg=="added") {
+		      		var $addedComp = "<option>" + $listTitle + "</option>"
+		      		$("#customCompetentionListSelector").append($addedComp)
+
+		      		$('#customCompetentionListSelector:selected').removeAttr('selected');
+							//Using the text
+							$('#customCompetentionListSelector').find('option:contains(' + $listTitle + ')').attr("selected",true);
+
+							$('#CustomWorkActions').html("");
+							$('#CustomNeccessarySkills').html("");
+							$('#CustomNeccessaryKnowledges').html("");
+							compareCustomAndStandart();
+		      	}
+		      }
+		    })
+		  });
+
+		  $('body').on('click', '#deleteCustomCompetentionListButton', function(){
+			var $listTitle = $('#customCompetentionListSelector :selected').text();
+
+		  	$.ajax({
+		      type: "POST",
+		      url: "../deleteCustomCompetentionList/",
+		      data:  {
+		        listTitle: $listTitle,
+		        csrfmiddlewaretoken: "{{ csrf_token }}",
+		      },
+		      success: function(msg){
+		        $('#customCompetentionListSelector').find('option:contains(' + $listTitle + ')').remove();
+
+		        var $customCompetentionListTitle = $('#customCompetentionListSelector :selected').text();
+				getCustomCompetentionList($customCompetentionListTitle);
+
+		        compareCustomAndStandart();
+		      }
+		    })
+		  })
+
+
+
+			$('body').on('change', '#educationalStandartSelector', function(){
+				var $educationalStandartTitle = $('#educationalStandartSelector :selected').text();
+				getEducationalStandart($educationalStandartTitle);
+			});
+
+			$('body').on('change', '#customCompetentionListSelector', function(){
+				var $customCompetentionListTitle = $('#customCompetentionListSelector :selected').text();
+				getCustomCompetentionList($customCompetentionListTitle);
+			});
+		  
+		})
+		
+	</script>
+{% endblock content %}
+

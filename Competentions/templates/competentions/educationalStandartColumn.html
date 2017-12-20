@@ -1,0 +1,50 @@
+<div class="panel-group">
+
+  <div class="panel panel-default">
+    <div class="panel-heading collapser">
+      <h4 class="panel-title">
+        <a data-toggle="collapse">Номер</a>
+      </h4>
+    </div>
+    <div class="panel-collapse collapse">
+      <div class="panel-body">
+        {{educationalStandart.number}}
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading collapser">
+      <h4 class="panel-title">
+        <a data-toggle="collapse">Уровень образования</a>
+      </h4>
+    </div>
+    <div class="panel-collapse collapse">
+      <div class="panel-body">
+        {{educationalStandart.education_type}}
+      </div>
+    </div>
+  </div>
+
+  {% for group in educationalStandartGroups %}
+  <div class="panel panel-default">
+    <div class="panel-heading collapser">
+      <h4 class="panel-title">
+        <a data-toggle="collapse">{{group}}</a>
+      </h4>
+    </div>
+    <div class="panel-collapse collapse in">
+      <div class="panel-body">
+        <div class="btn-group-vertical">
+          {% for competention in educationalStandart.educationalStandartCompetentions.all %}
+            {% if competention.group == group %}
+              <li class="list-group-item">{{competention.title}}</li>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+
+</div>

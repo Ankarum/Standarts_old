@@ -20,8 +20,16 @@ urlpatterns = [
     url(r'^test/', views.test),
     url(r'^test2/', views.test2),
     url(r'^test3/', views.test3),
-    url(r'^test4/', views.test4),
+    url(r'^userCompetentions/', views.userCompetentions),
+    url(r'^educationalStandarts/', views.educationalStandartsView),
     url(r'^test5/', views.test5),
     url(r'^getStandart/', views.getStandartAjax),
-    url(r'^getCustomCompetention/', views.getCustomCompetentionAjax)
+    url(r'^getCustomCompetentionList/', views.getCustomCompetentionListAjax),
+    url(r'^getSimpleViewStandart/', views.getSimpleViewStandartAjax),
+    url(r'^addCustomCompetention/', views.addCustomCompetentionListAjax),
+    url(r'^updateCustomCompetentionList/', views.updateCustomCompetentionListAjax),
+    url(r'^addCompetentionToCustomCompetentionList/', views.addCompetentionToCustomCompetentionList),
+    url(r'^addCustomCompetentionListAjax/', views.addCustomCompetentionList),
+    url(r'^deleteCustomCompetentionList/', views.deleteCustomCompetentionListAjax),
+    url(r'^getEducationalStandart/', views.getEducationalStandartAjax),
 ]

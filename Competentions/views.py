@@ -5,7 +5,92 @@ from . import models
 from . import forms
 import json
 
+from django.views.generic.base import View
+from django.views.generic.edit import FormView
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth import login, logout
+
 # Create your views here.
+
+class RegisterFormView(FormView):
+	form_class = UserCreationForm
+
+	success_url = "/"
+
+	template_name = "main/register.html"
+
+	def form_valid(self, form):
+		form.save()
+
+		return super(RegisterFormView, self).form_valid(form)
+
+class LoginFormView(FormView):
+	print('login view')
+	form_class = AuthenticationForm
+
+	template_name = "main/login.html"
+
+	success_url = "/"
+
+	def form_valid(self, form):
+		self.user = form.get_user()
+
+		login(self.request, self.user)
+		return super(LoginFormView, self).form_valid(form)
+
+class LogoutView(View):
+	def get(self, request):
+		logout(request)
+		return HttpResponseRedirect("/")
+
+def addCustomCompetentionListAjax(request):
+	customCompetentionListTitle = request.POST.get('customCompetentionListTitle', None)
+	newCustomCompetentionList = models.CustomCompetentionList.objects.create(user=request.user, title=customCompetentionListTitle)
+	return HttpResponse("added")
+
+def addCustomCompetentionList(request):
+	listTitle = request.POST.get('newListTitle', None)
+	newCustomCompetentionList = models.CustomCompetentionList.objects.create(user=request.user, title=listTitle)
+	return HttpResponse("added")
+
+def deleteCustomCompetentionListAjax(request):
+	listTitle = request.POST.get('listTitle', None)
+	models.CustomCompetentionList.objects.filter(user=request.user, title=listTitle).delete()
+	return HttpResponse("deleted")
+
+def addCompetentionToCustomCompetentionList(request):
+	customCompetentionListTitle = request.POST.get('customCompetentionListTitle', None)
+	competentionType = request.POST.get('competentionType', None)
+	competentionTitle = request.POST.get('competentionTitle', None)
+
+	currentCompetentionList = models.CustomCompetentionList.objects.filter(title=customCompetentionListTitle)[0]
+
+	comp = ""
+	if competentionType == "WorkAction":
+		comp = models.WorkAction.objects.filter(title=competentionTitle)[0]
+		currentCompetentionList.workActions.add(comp)
+	elif competentionType == "NeccessarySkill":
+		comp = models.NeccessarySkill.objects.filter(title=competentionTitle)[0]
+		currentCompetentionList.neccessarySkills.add(comp)
+	elif competentionType == "NeccessaryKnowledge":
+		comp = models.NeccessaryKnowledge.objects.filter(title=competentionTitle)[0]
+		currentCompetentionList.neccessaryKnowledges.add(comp)
+
+	return HttpResponse("added")
+
+
+
+
+def updateCustomCompetentionListAjax(request):
+	customCompetentionTitle = request.POST.get('customCompetentionTitle', None)
+	workActions = request.POST.get('workActions', None)
+	neccessarySkills = request.POST.get('neccessarySkills', None)
+	neccessaryKnowledge = request.POST.get('neccessaryKnowledge', None)
+	print(customCompetentionTitle)
+	print(workActions)
+	print(neccessarySkills)
+	print(neccessaryKnowledge)
+	return "updated"
 
 def test(request):
 	print('#'*80)
@@ -52,13 +137,16 @@ def test3(request):
 		'''
 	return render(request, 'Competentions/test3.html', {'allCompetentions' : allCompetentions})
 
-def test4(request):
-	'''
-	t = models.Standart.objects.filter(title='Программист')[0]
-	return render(request, 'Competentions/test4.html', {'standart' : t})
-	'''
+def userCompetentions(request):
 	standarts = models.Standart.objects.all()
-	return render(request, 'Competentions/test4.html', {'standarts' : standarts})
+	return render(request, 'Competentions/userCompetentions.html', {'standarts' : standarts})
+
+def educationalStandartsView(request):
+	educationalStandarts = models.EducationalStandart.objects.all()
+	return render(request, 'Competentions/educationalStandarts.html', {'educationalStandarts' : educationalStandarts})
+
+def mainPage(request):
+	return render(request, 'main/mainPage.html')
 
 def test5(request):
 	return render(request, 'Competentions/test5.html')
@@ -68,10 +156,56 @@ def getStandartAjax(request):
 	t = models.Standart.objects.filter(title=standartTitle)[0]
 	return render(request, 'Competentions/leftColumn.html', {'standart' : t})
 
-def getCustomCompetentionAjax(request):
-	customCompetentionTitle = request.POST.get('customCompetentionTitle', None)
-	t = models.CustomCompetention.objects.filter(title=customCompetentionTitle)[0]
-	return render(request, 'Competentions/customCompetentionTemplate.html', {'customCompetention' : t})
+def getEducationalStandartAjax(request):
+	educationalStandartTitle = request.POST.get('educationalStandartTitle', None)
+	educationalStandart = models.EducationalStandart.objects.filter(title=educationalStandartTitle)[0]
+
+	comps = educationalStandart.educationalStandartCompetentions.all()
+	groups = set()
+	for comp in comps:
+		groups.add(comp.group)
+
+	return render(request, 'Competentions/educationalStandartColumn.html', {'educationalStandart' : educationalStandart, 'educationalStandartGroups' : groups})
+
+def getSimpleViewStandartAjax(request):
+
+	standartTitle = request.POST.get('standartTitle', None)
+	standart = models.Standart.objects.filter(title=standartTitle)[0]
+
+	allCompetentions = {
+		'Трудовые действия' : set(),
+		'Необходимые умения' : set(),
+		'Необходимые знания' : set()
+	}
+
+	commonWorkFunctions = standart.commonworkfunction_set.all()
+	for commonWorkFunction in commonWorkFunctions:
+		#commonWorkFunction = commonWorkFunctions[commonWorkFunctionName]
+
+		workFunctions = commonWorkFunction.workfunction_set.all()
+		for workFunction in workFunctions:
+			#workFunction = workFunctions[workFunctionName]
+
+			for workAction in workFunction.workActions.all():
+				allCompetentions['Трудовые действия'].add(workAction.title)
+
+			for neccessarySkill in workFunction.neccessarySkills.all():
+				allCompetentions['Необходимые умения'].add(neccessarySkill.title)
+
+			for neccessaryKnowledge in workFunction.neccessaryKnowledges.all():
+				allCompetentions['Необходимые знания'].add(neccessaryKnowledge.title)
+				'''
+	for comp in allCompetentions:
+		print()
+		print('#'*80)
+		print(allCompetentions[comp])
+		'''
+	return render(request, 'Competentions/simpleViewStandart.html', {'allCompetentions' : allCompetentions})
+
+def getCustomCompetentionListAjax(request):
+	customCompetentionListTitle = request.POST.get('customCompetentionListTitle', None)
+	t = models.CustomCompetentionList.objects.filter(title=customCompetentionListTitle)[0]
+	return render(request, 'Competentions/customCompetentionListTemplate.html', {'customCompetentionList' : t})
 
 
 def addStandart(request):

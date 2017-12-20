@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <form action="" method="post">
+      {% csrf_token %}
+
+      <form class="form-horizontal" action="/action_page.php">
+        <div class="form-group">
+          <label class="control-label col-sm-3" for="email">Имя пользователя:</label>
+          <div class="col-sm-9">
+            {{ form.username }}
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-sm-3" for="pwd">Пароль:</label>
+          <div class="col-sm-9"> 
+            {{ form.password1 }}
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-sm-3" for="pwd">Подтверждение пароля:</label>
+          <div class="col-sm-9"> 
+            {{ form.password2 }}
+          </div>
+        </div>
+        <div class="form-group"> 
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default">Зарегестрироваться</button>
+          </div>
+        </div>
+      </form>
+      
+</div>
+{% endblock content %}

@@ -131,11 +131,11 @@
                                     </div>
                                     <div class="panel-collapse collapse">
                                       <div class="panel-body">
-                                        <ul class="list-group">
+                                        <div class="btn-group-vertical">
                                           {% for workAction in workFunction.workActions.all %}
-                                            <li class="list-group-item">{{workAction}}</li>
+                                            <button class="StandartWorkAction btn btn-primary" style="white-space: normal;">{{workAction}}</button>
                                           {% endfor %}
-                                        </ul>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
@@ -148,11 +148,11 @@
                                     </div>
                                     <div class="panel-collapse collapse">
                                       <div class="panel-body">
-                                        <ul class="list-group">
+                                        <div class="btn-group-vertical">
                                           {% for neccessarySkill in workFunction.neccessarySkills.all %}
-                                            <li class="list-group-item">{{neccessarySkill}}</li>
+                                            <button class="StandartNeccessarySkill btn btn-primary" style="white-space: normal;">{{neccessarySkill}}</button>
                                           {% endfor %}
-                                        </ul>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
@@ -165,11 +165,11 @@
                                     </div>
                                     <div class="panel-collapse collapse">
                                       <div class="panel-body">
-                                        <ul class="list-group">
+                                        <div class="btn-group-vertical">
                                           {% for neccessaryKnowledge in workFunction.neccessaryKnowledges.all %}
-                                            <li class="list-group-item">{{neccessaryKnowledge}}</li>
+                                            <button class="StandartNeccessaryKnowledge btn btn-primary" style="white-space: normal;">{{neccessaryKnowledge}}</button>
                                           {% endfor %}
-                                        </ul>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>

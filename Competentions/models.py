@@ -72,12 +72,56 @@ class WorkFunction(models.Model):
 	def __str__(self):
 		return self.title
 
-class CustomCompetention(models.Model):
-	title = models.CharField(max_length=100)
-	user = models.ForeignKey(User)
-	workActions = models.ManyToManyField(WorkAction)
-	neccessarySkills = models.ManyToManyField(NeccessarySkill)
-	neccessaryKnowledges = models.ManyToManyField(NeccessaryKnowledge)
+class EducationalStandartCompetentionGroup(models.Model):
+	title = models.CharField(max_length=200)
 
 	def __str__(self):
 		return self.title
+
+class EducationalStandartCompetention(models.Model):
+	title = models.CharField(max_length=800)
+
+	group = models.ForeignKey(EducationalStandartCompetentionGroup)
+
+	def __str__(self):
+		return self.title
+
+class EducationalStandart(models.Model):
+	title = models.CharField(max_length=200)
+
+	number = models.CharField(max_length=10, null=True)
+
+	education_type = models.CharField(max_length=40, null=True) 
+
+	educationalStandartCompetentions = models.ManyToManyField(EducationalStandartCompetention)
+
+	def __str__(self):
+		return self.title
+
+class CustomCompetention(models.Model):
+	title = models.CharField(max_length=300)
+
+	user = models.ForeignKey(User)
+
+	def __str__(self):
+		return self.title
+
+class CustomCompetentionList(models.Model):
+	title = models.CharField(max_length=100)
+	user = models.ForeignKey(User)
+	workActions = models.ManyToManyField(WorkAction, blank=True)
+	neccessarySkills = models.ManyToManyField(NeccessarySkill, blank=True)
+	neccessaryKnowledges = models.ManyToManyField(NeccessaryKnowledge, blank=True)
+
+	generalProfessionalCompetentions = models.ManyToManyField(EducationalStandartCompetention, blank=True)
+
+	customCopetentions = models.ManyToManyField(CustomCompetention, blank=True)
+
+	def __str__(self):
+		return self.title
+
+class EducationalProgram(models.Model):
+	title = models.CharField(max_length=100)
+	user = models.ForeignKey(User)
+
+	competentionLists = models.ManyToManyField(CustomCompetentionList, blank=True)
