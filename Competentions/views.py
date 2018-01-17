@@ -10,8 +10,8 @@ from django.views.generic.edit import FormView
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout
 
-# Create your views here.
-
+# Функции для отображения страниц авторизации/регистрации/выхода
+#***************************************************************
 class RegisterFormView(FormView):
 	form_class = UserCreationForm
 
@@ -21,7 +21,6 @@ class RegisterFormView(FormView):
 
 	def form_valid(self, form):
 		form.save()
-
 		return super(RegisterFormView, self).form_valid(form)
 
 class LoginFormView(FormView):
@@ -42,190 +41,151 @@ class LogoutView(View):
 	def get(self, request):
 		logout(request)
 		return HttpResponseRedirect("/")
-
-def addCustomCompetentionListAjax(request):
-	customCompetentionListTitle = request.POST.get('customCompetentionListTitle', None)
-	newCustomCompetentionList = models.CustomCompetentionList.objects.create(user=request.user, title=customCompetentionListTitle)
-	return HttpResponse("added")
-
-def addCustomCompetentionList(request):
-	listTitle = request.POST.get('newListTitle', None)
-	newCustomCompetentionList = models.CustomCompetentionList.objects.create(user=request.user, title=listTitle)
-	return HttpResponse("added")
-
-def deleteCustomCompetentionListAjax(request):
-	listTitle = request.POST.get('listTitle', None)
-	models.CustomCompetentionList.objects.filter(user=request.user, title=listTitle).delete()
-	return HttpResponse("deleted")
-
-def addCompetentionToCustomCompetentionList(request):
-	customCompetentionListTitle = request.POST.get('customCompetentionListTitle', None)
-	competentionType = request.POST.get('competentionType', None)
-	competentionTitle = request.POST.get('competentionTitle', None)
-
-	currentCompetentionList = models.CustomCompetentionList.objects.filter(title=customCompetentionListTitle)[0]
-
-	comp = ""
-	if competentionType == "WorkAction":
-		comp = models.WorkAction.objects.filter(title=competentionTitle)[0]
-		currentCompetentionList.workActions.add(comp)
-	elif competentionType == "NeccessarySkill":
-		comp = models.NeccessarySkill.objects.filter(title=competentionTitle)[0]
-		currentCompetentionList.neccessarySkills.add(comp)
-	elif competentionType == "NeccessaryKnowledge":
-		comp = models.NeccessaryKnowledge.objects.filter(title=competentionTitle)[0]
-		currentCompetentionList.neccessaryKnowledges.add(comp)
-
-	return HttpResponse("added")
+#***************************************************************
 
 
 
+#Отображение страниц
+#***************************************************************
+# Отображение страницы профессиональных компетенций
+def professionalStandartsView(request):
+  standarts = models.Standart.objects.all()
+  return render(request, 'Competentions/professionalStandarts.html', {'standarts' : standarts})
 
-def updateCustomCompetentionListAjax(request):
-	customCompetentionTitle = request.POST.get('customCompetentionTitle', None)
-	workActions = request.POST.get('workActions', None)
-	neccessarySkills = request.POST.get('neccessarySkills', None)
-	neccessaryKnowledge = request.POST.get('neccessaryKnowledge', None)
-	print(customCompetentionTitle)
-	print(workActions)
-	print(neccessarySkills)
-	print(neccessaryKnowledge)
-	return "updated"
-
-def test(request):
-	print('#'*80)
-	t = models.CommonWorkFunction.objects.filter(title='Разработка требований и проектирование программного обеспечения')[0]
-	#print(models.WorkFunction.objects['Формализация и алгоритмизация поставленных задач'])
-	print(t.workfunction_set.all())
-	print('#'*80)
-	return render(request, 'Competentions/test.html')
-
-def test2(request):
-	t = models.Standart.objects.filter(title='Программист')[0]
-	return render(request, 'Competentions/test2.html', {'standart' : t})
-
-def test3(request):
-	allCompetentions = {
-		'Трудовые функции' : set(),
-		'Необходимые умения' : set(),
-		'Необходимые знания' : set()
-	}
-
-	standart = models.Standart.objects.filter(title='Программист')[0]
-
-	commonWorkFunctions = standart.commonworkfunction_set.all()
-	for commonWorkFunction in commonWorkFunctions:
-		#commonWorkFunction = commonWorkFunctions[commonWorkFunctionName]
-
-		workFunctions = commonWorkFunction.workfunction_set.all()
-		for workFunction in workFunctions:
-			#workFunction = workFunctions[workFunctionName]
-
-			for workAction in workFunction.workActions.all():
-				allCompetentions['Трудовые функции'].add(workAction.title)
-
-			for neccessarySkill in workFunction.neccessarySkills.all():
-				allCompetentions['Необходимые умения'].add(neccessarySkill.title)
-
-			for neccessaryKnowledge in workFunction.neccessaryKnowledges.all():
-				allCompetentions['Необходимые знания'].add(neccessaryKnowledge.title)
-				'''
-	for comp in allCompetentions:
-		print()
-		print('#'*80)
-		print(allCompetentions[comp])
-		'''
-	return render(request, 'Competentions/test3.html', {'allCompetentions' : allCompetentions})
-
-def userCompetentions(request):
-	standarts = models.Standart.objects.all()
-	return render(request, 'Competentions/userCompetentions.html', {'standarts' : standarts})
-
+# Отображение страницы образовательных стандартов
 def educationalStandartsView(request):
-	educationalStandarts = models.EducationalStandart.objects.all()
-	return render(request, 'Competentions/educationalStandarts.html', {'educationalStandarts' : educationalStandarts})
+  educationalStandarts = models.EducationalStandart.objects.all()
+  return render(request, 'Competentions/educationalStandarts.html', {'educationalStandarts' : educationalStandarts})
 
 def mainPage(request):
-	return render(request, 'main/mainPage.html')
+  return render(request, 'main/mainPage.html')
+#***************************************************************
 
-def test5(request):
-	return render(request, 'Competentions/test5.html')
 
-def getStandartAjax(request):
-	standartTitle = request.POST.get('standartTitle', None)
-	t = models.Standart.objects.filter(title=standartTitle)[0]
-	return render(request, 'Competentions/leftColumn.html', {'standart' : t})
 
+#Отображение наборов компетенций
+#***************************************************************
+# Отображение профессионального стандарта
+def getProfessionalStandartAjax(request):
+  standartTitle = request.POST.get('standartTitle', None)
+  t = models.Standart.objects.filter(title=standartTitle)[0]
+  return render(request, 'Competentions/professionalStandart.html', {'standart' : t})
+
+# Отображение образовательного стандарта
 def getEducationalStandartAjax(request):
-	educationalStandartTitle = request.POST.get('educationalStandartTitle', None)
-	educationalStandart = models.EducationalStandart.objects.filter(title=educationalStandartTitle)[0]
+  educationalStandartTitle = request.POST.get('educationalStandartTitle', None)
+  educationalStandart = models.EducationalStandart.objects.filter(title=educationalStandartTitle)[0]
 
-	comps = educationalStandart.educationalStandartCompetentions.all()
-	groups = set()
-	for comp in comps:
-		groups.add(comp.group)
+  # Отображение групп, к которым принадлежат компетенции образовательного стандарта
+  comps = educationalStandart.educationalStandartCompetentions.all()
+  groups = set()
+  for comp in comps:
+    groups.add(comp.group)
 
-	return render(request, 'Competentions/educationalStandartColumn.html', {'educationalStandart' : educationalStandart, 'educationalStandartGroups' : groups})
+  return render(request, 'Competentions/educationalStandartColumn.html', {'educationalStandart' : educationalStandart, 'educationalStandartGroups' : groups})
 
-def getSimpleViewStandartAjax(request):
+# Функция для отображения профессионального стандарта в упрощенном виде
+# (только компетенции профессионального стандарта)
+def getSimpleViewProfessionalStandartAjax(request):
 
-	standartTitle = request.POST.get('standartTitle', None)
-	standart = models.Standart.objects.filter(title=standartTitle)[0]
+  standartTitle = request.POST.get('standartTitle', None)
+  standart = models.Standart.objects.filter(title=standartTitle)[0]
 
-	allCompetentions = {
-		'Трудовые действия' : set(),
-		'Необходимые умения' : set(),
-		'Необходимые знания' : set()
-	}
+  # Множества, в которые собираются все компетенции по профессиональному стандарту
+  # Множества использованы для исключения повторов
+  allCompetentions = {
+    'Трудовые действия' : set(),
+    'Необходимые умения' : set(),
+    'Необходимые знания' : set()
+  }
 
-	commonWorkFunctions = standart.commonworkfunction_set.all()
-	for commonWorkFunction in commonWorkFunctions:
-		#commonWorkFunction = commonWorkFunctions[commonWorkFunctionName]
+  # Цикл по всем рабочим функциям внутри профессионального стандарты,
+  # в котором компетенции добавляются в соответствующие множества
+  commonWorkFunctions = standart.commonworkfunction_set.all()
+  for commonWorkFunction in commonWorkFunctions:
 
-		workFunctions = commonWorkFunction.workfunction_set.all()
-		for workFunction in workFunctions:
-			#workFunction = workFunctions[workFunctionName]
+    workFunctions = commonWorkFunction.workfunction_set.all()
+    for workFunction in workFunctions:
 
-			for workAction in workFunction.workActions.all():
-				allCompetentions['Трудовые действия'].add(workAction.title)
+      for workAction in workFunction.workActions.all():
+        allCompetentions['Трудовые действия'].add(workAction.title)
 
-			for neccessarySkill in workFunction.neccessarySkills.all():
-				allCompetentions['Необходимые умения'].add(neccessarySkill.title)
+      for neccessarySkill in workFunction.neccessarySkills.all():
+        allCompetentions['Необходимые умения'].add(neccessarySkill.title)
 
-			for neccessaryKnowledge in workFunction.neccessaryKnowledges.all():
-				allCompetentions['Необходимые знания'].add(neccessaryKnowledge.title)
-				'''
-	for comp in allCompetentions:
-		print()
-		print('#'*80)
-		print(allCompetentions[comp])
-		'''
-	return render(request, 'Competentions/simpleViewStandart.html', {'allCompetentions' : allCompetentions})
+      for neccessaryKnowledge in workFunction.neccessaryKnowledges.all():
+        allCompetentions['Необходимые знания'].add(neccessaryKnowledge.title)
+  return render(request, 'Competentions/simpleViewStandart.html', {'allCompetentions' : allCompetentions})
 
+# Отобразить набор пользовательских компетенций
 def getCustomCompetentionListAjax(request):
-	customCompetentionListTitle = request.POST.get('customCompetentionListTitle', None)
-	t = models.CustomCompetentionList.objects.filter(title=customCompetentionListTitle)[0]
-	return render(request, 'Competentions/customCompetentionListTemplate.html', {'customCompetentionList' : t})
+  customCompetentionListTitle = request.POST.get('customCompetentionListTitle', None)
+  t = models.CustomCompetentionList.objects.filter(title=customCompetentionListTitle)[0]
+  return render(request, 'Competentions/customCompetentionListTemplate.html', {'customCompetentionList' : t})
+#***************************************************************
 
 
+
+#Добавление и удаление набора компетенций
+#***************************************************************
+# Функция для создания нового пользовательского списка компетенций
+def addCustomCompetentionListAjax(request):
+  listTitle = request.POST.get('newListTitle', None)
+  newCustomCompetentionList = models.CustomCompetentionList.objects.create(user=request.user, title=listTitle)
+  return HttpResponse("added")
+
+# Функция для удаления пользовательского списка компетенций по имени
+def deleteCustomCompetentionListAjax(request):
+  listTitle = request.POST.get('listTitle', None)
+  models.CustomCompetentionList.objects.filter(user=request.user, title=listTitle).delete()
+  return HttpResponse("deleted")
+
+# Функция для добавления компетенции к пользовательскому списку компетенций
+def addCompetentionToCustomCompetentionList(request):
+  # Название пользовательского набора компетенций
+  customCompetentionListTitle = request.POST.get('customCompetentionListTitle', None)
+  competentionType = request.POST.get('competentionType', None) # Тип компетенции
+  competentionTitle = request.POST.get('competentionTitle', None) # Название компетенции
+
+  currentCompetentionList = models.CustomCompetentionList.objects.filter(title=customCompetentionListTitle)[0]
+
+  # Добавление компетенции в соответствующий список пользовательского набора
+  comp = ""
+  if competentionType == "WorkAction":
+    comp = models.WorkAction.objects.filter(title=competentionTitle)[0]
+    currentCompetentionList.workActions.add(comp)
+  elif competentionType == "NeccessarySkill":
+    comp = models.NeccessarySkill.objects.filter(title=competentionTitle)[0]
+    currentCompetentionList.neccessarySkills.add(comp)
+  elif competentionType == "NeccessaryKnowledge":
+    comp = models.NeccessaryKnowledge.objects.filter(title=competentionTitle)[0]
+    currentCompetentionList.neccessaryKnowledges.add(comp)
+
+  return HttpResponse("added")
+#***************************************************************
+
+
+
+
+# Добавление стандарта из Json файла
+#********************************************************************************
 def addStandart(request):
 	if request.method == 'POST':
 		form = forms.StandartImportForm(request.POST, request.FILES)
 		if form.is_valid():
-			#print(request.FILES.getlist('standartJSON'))
 			files = request.FILES.getlist('standartJSON')
 			i = 1
 			for file in files:
 				print('Обработка файла: ' + str(i) + ' из ' + str(len(files)))
 				JsonToDatabase(file)
 			print('Обработка файлов завершена')
-			#JsonToDatabase(request.FILES['standartJSON'])
 			return HttpResponseRedirect('')
 	else:
 		form = forms.StandartImportForm()
 
 	return render(request, 'Competentions/getStandart.html', {'form' : form})
 
+# Функция для добавления профессионального стандарта в формате JSON в базу данных
 def JsonToDatabase(f):
 	raw = f.read().decode('utf8')
 	standart = json.loads(raw)
@@ -287,7 +247,7 @@ def JsonToDatabase(f):
 				neccessaryKnowledgeModel.save()
 				workFunctionModel.neccessaryKnowledges.add(neccessaryKnowledgeModel)
 
-
+#********************************************************************************
 
 
 

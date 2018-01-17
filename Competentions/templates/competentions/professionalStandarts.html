@@ -69,7 +69,7 @@
 					    </div>
 					  </div>
 
-					  <button type="button" class="btn btn-default dropdown-toggle" id="deleteCustomCompetentionListButton" ">Удалить</button>
+					  <button type="button" class="btn btn-default dropdown-toggle" id="deleteCustomCompetentionListButton">Удалить</button>
 
 			    </div>
 			  </div>
@@ -86,7 +86,9 @@
 
 	<script type="text/javascript">
 
-	
+// Отображение стандартов и наборов компетенций
+//*****************************************************
+		// Отображение профессионального стандарта по его названию
 		function getStandart(standartTitle){
 	    $.ajax({
 	      type: "POST",
@@ -102,6 +104,7 @@
 	    })
 	  };
 
+	  // Отображение профессионального стандарта в упрощенном виде
 	  function getSimpleViewStandart(standartTitle){
 	    $.ajax({
 	      type: "POST",
@@ -117,36 +120,7 @@
 	    })
 	  };
 
-	  function addNewCustomCompetentionList(newListTitle){
-	    $.ajax({
-	      type: "POST",
-	      url: "../addCustomCompetentionListAjax/",
-	      data:  {
-	        newListTitle: newListTitle,
-	        csrfmiddlewaretoken: "{{ csrf_token }}",
-	      },
-	      success: function(msg){
-	        $("#StandartCompetentionColumn").html(msg);
-	        compareCustomAndStandart();
-	      }
-	    })
-	  };
-
-	  function deleteCustomCompetentionList(listTitle){
-	  	$.ajax({
-	      type: "POST",
-	      url: "../deleteCustomCompetentionListAjax/",
-	      data:  {
-	        listTitle: listTitle,
-	        csrfmiddlewaretoken: "{{ csrf_token }}",
-	      },
-	      success: function(msg){
-	        $('#customCompetentionListSelector').find('option:contains(' + $listTitle + ')').remove();
-	        compareCustomAndStandart();
-	      }
-	    })
-	  }
-
+	  // Отображение пользовательского набора компетенций
 	  function getCustomCompetentionList(customCompetentionListTitle){
 	    $.ajax({
 	      type: "POST",
@@ -161,7 +135,10 @@
 	      }
 	    })
 	  };
+//*****************************************************
 
+		// Сравнение пользовательского набора и профессионального стандарта
+		// для подсветки тех компетенций профессионального стандарта, которые можно добавить
 	  function compareCustomAndStandart()
 	  	{
 	  		var dict = {
@@ -187,6 +164,8 @@
 	  	}
 
 		$(document).ready(function(){
+			// При загрузке страницы отображеются первые профессиональный стандарт и пользовательский
+			// набор компетенций из списка
 			var $standartTitle = $('#standartSelector :selected').text();
 			getStandart($standartTitle)
 
@@ -197,39 +176,7 @@
         $(this).next().collapse('toggle');
       });
 
-		  $('body').on('click', '.changeCompetention', function(){
-		    $.ajax({
-		      type: "POST",
-		      url: "../getStandart/",
-		      data:  {
-		        standartTitle: "Программист",
-		        csrfmiddlewaretoken: "{{ csrf_token }}",
-		      },
-		      success: function(msg){
-		        $(".LeftColumn").html(msg);
-		      }
-		    })
-		  });
-/*
-		  $('body').on('click', '#addCustomCompetentionListButton', function(){
-		  	var $customCompetentionListTitle = $("#newCompetentionTitle").val();
-		    $.ajax({
-		      type: "POST",
-		      url: "../addCustomCompetention/",
-		      data:  {
-		        csrfmiddlewaretoken: "{{ csrf_token }}",
-		        customCompetentionListTitle: $customCompetentionListTitle,
-		      },
-		      success: function(msg){
-		      	if (msg=="added") {
-		      		var $addedComp = "<option>" + $customCompetentionListTitle + "</option>"
-		      		$("#customCompetentionListSelector").append($addedComp)
-		      	}
-		      }
-		    })
-		  });*/
-
-
+			// Добавление компетенции из профессионального набора компетенций в пользовательский набор
 		  $('body').on('click', '.btn-default', function(){
 		  	var dict = {
 	  			"StandartWorkAction" : ["#CustomWorkActions", "WorkAction", "CustomCompetentionListWorkAction"],
@@ -261,12 +208,13 @@
 		    })
 		  });
 
+		  // Добавление нового пользовательского набора компетенций
 		  $('body').on('click', '#addCustomCompetentionListButton', function(){
 		  	var $listTitle = $('#newCustomCompetentionListTitle').val();
 
 		  	$.ajax({
 		      type: "POST",
-		      url: "../addCustomCompetentionListAjax/",
+		      url: "../addCustomCompetentionList/",
 		      data:  {
 		        newListTitle: $listTitle,
 		        csrfmiddlewaretoken: "{{ csrf_token }}",
@@ -277,7 +225,6 @@
 		      		$("#customCompetentionListSelector").append($addedComp)
 
 		      		$('#customCompetentionListSelector:selected').removeAttr('selected');
-							//Using the text
 							$('#customCompetentionListSelector').find('option:contains(' + $listTitle + ')').attr("selected",true);
 
 							$('#CustomWorkActions').html("");
@@ -289,6 +236,7 @@
 		    })
 		  });
 
+		  // Удаление пользовательского набора компетенций
 		  $('body').on('click', '#deleteCustomCompetentionListButton', function(){
 			var $listTitle = $('#customCompetentionListSelector :selected').text();
 
@@ -310,8 +258,8 @@
 		    })
 		  })
 
-
-
+		  // При смене профессионального стандарта или переключении упрощенного вида, загружается
+		  // выбранный профессиональный стандарт
 			$('body').on('change', '#standartSelector, #simpleViewStandartCheck', function(){
 				var $standartTitle = $('#standartSelector :selected').text();
 				if($('#simpleViewStandartCheck').is(":checked")){
@@ -321,6 +269,7 @@
 				}
 			});
 
+			// Загрузка пользовательского набора компетенций при смене
 			$('body').on('change', '#customCompetentionListSelector', function(){
 				var $customCompetentionListTitle = $('#customCompetentionListSelector :selected').text();
 				getCustomCompetentionList($customCompetentionListTitle);

@@ -17,19 +17,13 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
-    url(r'^test/', views.test),
-    url(r'^test2/', views.test2),
-    url(r'^test3/', views.test3),
-    url(r'^userCompetentions/', views.userCompetentions),
+    url(r'^professionalStandarts/', views.professionalStandartsView),
     url(r'^educationalStandarts/', views.educationalStandartsView),
-    url(r'^test5/', views.test5),
-    url(r'^getStandart/', views.getStandartAjax),
+    url(r'^getStandart/', views.getProfessionalStandartAjax),
     url(r'^getCustomCompetentionList/', views.getCustomCompetentionListAjax),
-    url(r'^getSimpleViewStandart/', views.getSimpleViewStandartAjax),
-    url(r'^addCustomCompetention/', views.addCustomCompetentionListAjax),
-    url(r'^updateCustomCompetentionList/', views.updateCustomCompetentionListAjax),
+    url(r'^getSimpleViewStandart/', views.getSimpleViewProfessionalStandartAjax),
     url(r'^addCompetentionToCustomCompetentionList/', views.addCompetentionToCustomCompetentionList),
-    url(r'^addCustomCompetentionListAjax/', views.addCustomCompetentionList),
+    url(r'^addCustomCompetentionList/', views.addCustomCompetentionListAjax),
     url(r'^deleteCustomCompetentionList/', views.deleteCustomCompetentionListAjax),
     url(r'^getEducationalStandart/', views.getEducationalStandartAjax),
 ]
